@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Party Center Software Word Association</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-primary: #1c75bc;   --brand-secondary: #90bceb; --brand-accent: #1c75bc;
+      --bg-gradient: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+      --panel-bg: #ffffff; --text-color: #0B1021; --muted: #64748B; --success: #16A34A; --danger: #DC2626; --card-shadow: 0 10px 25px rgba(0,0,0,0.15); --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color: var(--text-color); background: var(--bg-gradient); min-height: 100vh; display: grid; place-items: center; }
+    .app { width: min(1100px, 92vw); background: var(--panel-bg); border-radius: var(--radius); box-shadow: var(--card-shadow); overflow: hidden; }
+    header { padding: 24px 28px; background: #fff; border-bottom: 1px solid #EEF2F7; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .logo { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-gradient); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6); }
+    h1 { font-size: 1.25rem; margin: 0; font-weight: 800; } .tagline { color: var(--muted); font-size: 0.95rem; }
+    .content { display: grid; grid-template-columns: 320px 1fr; gap: 0; }
+    aside { background: #F8FAFC; border-right: 1px solid #EEF2F7; padding: 18px; }
+    .section-title { font-weight: 700; color: #0F172A; margin: 8px 0 12px; } .category-list { display: grid; gap: 10px; }
+    .category-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; cursor: pointer; transition: transform .05s ease, border-color .2s ease, box-shadow .2s ease; }
+    .category-btn:hover { border-color: #CBD5E1; box-shadow: 0 6px 18px rgba(28,117,188,0.15); } .category-btn.active { border-color: var(--brand-secondary); box-shadow: 0 6px 18px rgba(144,188,235,0.45); }
+    .pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(144,188,235,0.18); color: var(--brand-primary); font-weight: 700; }
+    .controls { display: grid; gap: 10px; margin-top: 16px; } .btn { padding: 12px 14px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; transition: filter .2s ease, transform .06s ease; }
+    .btn:active { transform: translateY(1px); } .btn-primary { background: var(--brand-primary); color: #fff; } .btn-secondary { background: var(--brand-secondary); color: #062C33; } .btn-accent { background: var(--brand-accent); color: #fff; } .btn-warm { background: #0F172A; color: #fff; }
+    .help { margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
+    main { padding: 24px; } .row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .timer { display: flex; align-items: center; gap: 10px; background: #0F172A; color: #fff; padding: 8px 14px; border-radius: 999px; }
+    .timer .count { font-weight: 800; font-size: 1.1rem; } .timer .bar { width: 200px; height: 8px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.2); } .timer .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary)); }
+    .play { margin-top: 16px; display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .card { background: #fff; border: 1px solid #E5E7EB; border-radius: 16px; padding: 18px; position: relative; box-shadow: var(--card-shadow); }
+    .card h3 { margin: 0; font-size: 1rem; font-weight: 800; } .word { font-size: 1.6rem; margin-top: 6px; font-weight: 800; letter-spacing: .5px; }
+    .hidden .word { filter: blur(10px); user-select: none; -webkit-user-select: none; -moz-user-select: none; pointer-events: none; }
+    .clues { display: grid; gap: 8px; margin: 12px 0; }
+    .clue { background: #F1F5F9; color: #0F172A; padding: 8px 10px; border-radius: 10px; font-weight: 600; } .clue.locked { filter: blur(6px); opacity: .65; }
+    .clue-btn { border: none; background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary)); color: #fff; padding: 8px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+    .guess-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; } .guess-input { padding: 12px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 1rem; }
+    .feedback { margin-top: 8px; font-weight: 700; } .feedback.ok { color: var(--success); } .feedback.no { color: var(--danger); }
+    .scoreboard { margin-top: 16px; display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; } .score { background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 10px; text-align: center; font-weight: 800; }
+    .footer { padding: 16px 24px; background: #F8FAFC; border-top: 1px solid #EEF2F7; font-size: 0.85rem; color: var(--muted); }
+
+    /* Modal styles */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .modal { background: #fff; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); width: min(420px, 92vw); padding: 22px; text-align: center; }
+    .modal h2 { margin: 0 0 8px; font-weight: 800; color: var(--brand-primary); }
+    .modal p { margin: 0 0 16px; color: #334155; }
+    .modal .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .modal .btn { padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; }
+    .modal .btn-primary { background: var(--brand-primary); color: #fff; }
+    .modal .btn-secondary { background: var(--brand-secondary); color: #062C33; }
+
+    @media (max-width: 560px) { .timer .bar { width: 120px; } }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header>
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>Party Center Software Word Association</h1>
+        <div class="tagline">Guess the hidden words using associations (PCS-inspired categories)</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <aside>
+        <div class="section-title">Categories</div>
+        <div id="categories" class="category-list"></div>
+        <div class="controls">
+          <button class="btn btn-primary" id="startBtn">Start / Pause</button>
+          <button class="btn btn-secondary" id="resetBtn">Reset Round</button>
+          <button class="btn btn-accent" id="shuffleBtn">Shuffle Order</button>
+          <button class="btn btn-warm" id="newGameBtn">New Game</button>
+        </div>
+        <div class="help"><strong>How to play:</strong> Click a category to auto-start the 60s timer. Use hints and type your guess. Correct answers reveal the word and score a point. Bonus +2 if you clear all six within time.</div>
+      </aside>
+
+      <main>
+        <div class="row">
+          <div id="currentCategory" class="section-title">Pick a category to begin</div>
+          <div class="timer" role="timer" aria-live="polite">
+            <span>⏱️</span>
+            <span class="count" id="count">60</span>
+            <div class="bar"><div class="fill" id="fill"></div></div>
+            <button class="btn btn-secondary" id="timerBtn">Start</button>
+          </div>
+        </div>
+
+        <div class="play" id="play"></div>
+
+        <div class="scoreboard">
+          <div class="score">Words Correct: <span id="correct">0</span>/6</div>
+          <div class="score">Categories Cleared: <span id="cleared">0</span></div>
+          <div class="score">Total Score: <span id="total">0</span></div>
+        </div>
+        <div class="help">Rules: Clues are contextual associations. No rhymes or spelling hints.</div>
+      </main>
+    </div>
+
+    <div class="footer">Theme inspired by Party Center Software and FEC industry.</div>
+  </div>
+
+  <!-- Times Up Modal -->
+  <div id="timesUpBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-labelledby="timesUpTitle" aria-modal="true">
+      <h2 id="timesUpTitle">Times Up!</h2>
+      <p>The round has ended. You can reveal the current word or start a new category.</p>
+      <div class="actions">
+        <button id="timesUpReveal" class="btn btn-primary">Reveal Current Word</button>
+        <button id="timesUpClose" class="btn btn-secondary">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      { name: 'Party Booking', items: [
+        { word: 'Reservation', clues: ['Hold a time slot','Made before arrival','Confirmation number','Table or lane'] },
+        { word: 'Deposit', clues: ['Partial payment','Up front','Hold your spot','Refundable sometimes'] },
+        { word: 'Availability', clues: ['Open slots','Real-time calendar','Not fully booked','Schedule openings'] },
+        { word: 'Calendar', clues: ['Dates grid','Month / week view','Where you schedule','Shows events'] },
+        { word: 'Confirmation', clues: ['Email receipt','Booking code','Verify details','Message you receive'] },
+        { word: 'Online', clues: ['Web-based','24/7 access','On your phone','Browser'] },
+      ]},
+      { name: 'Digital Waivers', items: [
+        { word: 'Liability', clues: ['Responsibility','Legal term','Risk involved','Who is on the hook'] },
+        { word: 'Signature', clues: ['Your name written','E‑sign approval','Authorize document','Autograph'] },
+        { word: 'Safety', clues: ['Rules','Protect guests','Precautions','Reduce risk'] },
+        { word: 'Form', clues: ['Document','Fill fields','Submit info','Template'] },
+        { word: 'Check-in', clues: ['Arrive and register','Front desk','Start of visit','Verify attendance'] },
+        { word: 'Data', clues: ['Information','Collected points','Analytics','Guest details'] },
+      ]},
+      { name: 'Point of Sale (POS)', items: [
+        { word: 'Register', clues: ['Cash drawer','Till at counter','POS terminal','Where you pay'] },
+        { word: 'Receipt', clues: ['Proof of purchase','Itemized list','Email or print','Totals & tax'] },
+        { word: 'Payment', clues: ['Card or cash','Process money','Complete sale','Tap / swipe / chip'] },
+        { word: 'Transaction', clues: ['Sale record','Charge event','Line items','Order total'] },
+        { word: 'Inventory', clues: ['Stock levels','Items on hand','Count products','Restock planning'] },
+        { word: 'Gift Card', clues: ['Stored value','Prepaid balance','Redeem later','Present for guests'] },
+      ]},
+      { name: 'Marketing Suite', items: [
+        { word: 'Email', clues: ['Inbox','Campaigns','Newsletters','Send to contacts'] },
+        { word: 'Social', clues: ['Posts & comments','Likes & shares','Platforms','Schedule content'] },
+        { word: 'SEO', clues: ['Search ranking','Keywords','Google','Organic traffic'] },
+        { word: 'Campaign', clues: ['Planned messaging','Promotion','Run over time','Series of posts'] },
+        { word: 'Blog', clues: ['Articles','Content hub','Publish posts','Read & share'] },
+        { word: 'Reviews', clues: ['Ratings','Feedback','Stars','Customer comments'] },
+      ]},
+      { name: 'Memberships', items: [
+        { word: 'Loyalty', clues: ['Repeat guests','Rewards','Points','Return visits'] },
+        { word: 'Billing', clues: ['Charge cycle','Invoices','Payments','Monthly or annual'] },
+        { word: 'Renewal', clues: ['Extend term','Next period','Subscription continues','Keep benefits'] },
+        { word: 'Discount', clues: ['Lower price','Promo','Savings','Deal'] },
+        { word: 'Portal', clues: ['Member login','Self‑service','Manage account','Online access'] },
+        { word: 'Retention', clues: ['Keep customers','Reduce churn','Stay subscribed','Long‑term members'] },
+      ]},
+      { name: 'Event Operations', items: [
+        { word: 'Schedule', clues: ['Timeline','Plan times','Set slots','Book resources'] },
+        { word: 'Staffing', clues: ['Assign people','Shifts','Coverage','Team roster'] },
+        { word: 'Time Cards', clues: ['Clock‑in/out','Payroll hours','Timesheets','Track time'] },
+        { word: 'Resources', clues: ['Rooms & gear','Capacity','Allocation','Equipment'] },
+        { word: 'Checklist', clues: ['Tasks list','Tick items','Steps to complete','Pre‑event prep'] },
+        { word: 'Experience', clues: ['Guest journey','Memorable','Service quality','Fun factor'] },
+      ]},
+    ];
+
+    const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+
+    let state = {
+      selectedIndex: null,
+      order: [0,1,2,3,4,5],
+      revealed: [false,false,false,false,false,false], // correctly guessed
+      shown:    [false,false,false,false,false,false], // revealed (either by guess or manual reveal)
+      lockedClues: [true,true,true,true],
+      correct: 0,
+      cleared: parseInt(localStorage.getItem('cleared_play')||'0',10),
+      total: parseInt(localStorage.getItem('total_play')||'0',10),
+      running: false,
+      time: 60,
+      timeUp: false,
+      interval: null
+    };
+
+    const els = { categories: document.getElementById('categories'), startBtn: document.getElementById('startBtn'), resetBtn: document.getElementById('resetBtn'), shuffleBtn: document.getElementById('shuffleBtn'), newGameBtn: document.getElementById('newGameBtn'), currentCategory: document.getElementById('currentCategory'), play: document.getElementById('play'), correct: document.getElementById('correct'), cleared: document.getElementById('cleared'), total: document.getElementById('total'), count: document.getElementById('count'), fill: document.getElementById('fill'), timerBtn: document.getElementById('timerBtn'), timesUpBackdrop: document.getElementById('timesUpBackdrop'), timesUpReveal: document.getElementById('timesUpReveal'), timesUpClose: document.getElementById('timesUpClose') };
+
+    function renderCategories(){ els.categories.innerHTML=''; data.forEach((c,idx)=>{ const btn=document.createElement('button'); btn.className='category-btn'+(state.selectedIndex===idx?' active':''); btn.innerHTML=`<span>${c.name}</span><span class="pill">${c.items.length} words</span>`; btn.onclick=()=>selectCategory(idx); els.categories.appendChild(btn); }); els.cleared.textContent=state.cleared; els.total.textContent=state.total; }
+
+    function selectCategory(idx){ stopTimer(); state.selectedIndex=idx; state.order=[0,1,2,3,4,5]; state.revealed=[false,false,false,false,false,false]; state.shown=[false,false,false,false,false,false]; state.correct=0; state.timeUp=false; state.time=60; els.count.textContent=state.time; els.fill.style.width='0%'; els.currentCategory.textContent=data[idx].name; renderCategories(); renderPlay(); startTimer(); }
+
+    function renderPlay(){ const cat=data[state.selectedIndex]; if(!cat){ els.play.innerHTML=''; return; } const nextIdx=state.order.find(i=>!state.shown[i]); els.play.innerHTML=''; if(nextIdx===undefined){ const done=document.createElement('div'); done.className='card'; done.innerHTML='<h3>Category Complete</h3><p>All words shown.</p>'; els.play.appendChild(done); return; } const item=cat.items[nextIdx]; const card=document.createElement('div'); card.className='card hidden'; card.innerHTML=`<h3>Word ${nextIdx+1} of 6</h3><div class="word">${item.word}</div><div class="clues" id="clues"></div><div class="guess-row"><input id="guess" class="guess-input" type="text" placeholder="Type your guess here" aria-label="Your guess" /><button id="guessBtn" class="btn btn-primary">Submit</button></div><div class="feedback" id="feedback"></div><div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;"><button id="hintBtn" class="clue-btn">Reveal Next Hint</button><button id="skipBtn" class="btn btn-secondary">Skip Word</button><button id="revealBtn" class="btn btn-accent">Reveal Word</button></div>`; els.play.appendChild(card); const guessEl=document.getElementById('guess'); const guessBtn=document.getElementById('guessBtn'); const hintBtn=document.getElementById('hintBtn'); const skipBtn=document.getElementById('skipBtn'); const revealBtn=document.getElementById('revealBtn'); const cluesEl=document.getElementById('clues'); const fb=document.getElementById('feedback'); cluesEl.innerHTML=''; state.lockedClues=[false,true,true,true]; item.clues.slice(0,4).forEach((cText,i)=>{ const c=document.createElement('div'); c.className='clue'+(state.lockedClues[i]?'':''); if(state.lockedClues[i]) c.classList.add('locked'); c.textContent=`Hint ${i+1}: ${cText}`; cluesEl.appendChild(c); }); if(state.timeUp){ guessEl.disabled=true; guessBtn.disabled=true; hintBtn.disabled=true; skipBtn.disabled=true; fb.textContent="⏱️ Time's up. You can reveal the word."; fb.className='feedback no'; } hintBtn.onclick=()=>{ if(state.timeUp) return; const idxToOpen=state.lockedClues.findIndex(v=>v); if(idxToOpen===-1) return; state.lockedClues[idxToOpen]=false; const nodes=cluesEl.querySelectorAll('.clue'); nodes[idxToOpen].classList.remove('locked'); }; skipBtn.onclick=()=>{ if(state.timeUp) return; state.order=state.order.filter(i=>i!==nextIdx).concat([nextIdx]); renderPlay(); }; revealBtn.onclick=()=>{ card.classList.remove('hidden'); state.shown[nextIdx]=true; setTimeout(()=>{ renderPlay(); }, 600); }; function submitGuess(){ const val=guessEl.value.trim(); if(!val){ fb.textContent='Type a guess.'; fb.className='feedback no'; return; } const isCorrect=normalize(val)===normalize(item.word); if(isCorrect){ fb.textContent='Correct!'; fb.className='feedback ok'; card.classList.remove('hidden'); state.revealed[nextIdx]=true; state.shown[nextIdx]=true; state.correct=state.revealed.filter(Boolean).length; els.correct.textContent=state.correct; setTimeout(()=>{ checkCleared(); renderPlay(); },700); } else { fb.textContent='Try again.'; fb.className='feedback no'; } } guessBtn.onclick=()=>{ if(state.timeUp) return; submitGuess(); }; guessEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !state.timeUp) submitGuess(); }); }
+
+    function checkCleared(){ if(state.revealed.every(Boolean)){ stopTimer(); finalizeRound(); } }
+
+    function showTimesUpModal(){ els.timesUpBackdrop.style.display='flex'; els.timesUpBackdrop.setAttribute('aria-hidden','false'); }
+    function hideTimesUpModal(){ els.timesUpBackdrop.style.display='none'; els.timesUpBackdrop.setAttribute('aria-hidden','true'); }
+
+    // When time ends: stop, mark timeUp, finalize, and show modal
+    function startTimer(){ if(state.running) return; state.running=true; state.timeUp=false; els.timerBtn.textContent='Pause'; state.interval=setInterval(()=>{ state.time-=1; els.count.textContent=state.time; const pct=Math.max(0,(60-state.time)/60*100); els.fill.style.width=pct+'%'; if(state.time<=0){ stopTimer(); state.timeUp=true; finalizeRound(); showTimesUpModal(); } },1000); }
+    function stopTimer(){ state.running=false; clearInterval(state.interval); els.timerBtn.textContent='Start'; }
+
+    function resetRound(){ hideTimesUpModal(); stopTimer(); state.time=60; state.timeUp=false; els.count.textContent=state.time; els.fill.style.width='0%'; state.order=[0,1,2,3,4,5]; state.revealed=[false,false,false,false,false,false]; state.shown=[false,false,false,false,false,false]; state.correct=0; renderPlay(); }
+    function shuffleOrder(){ state.order=state.order.map(v=>({v,r:Math.random()})).sort((a,b)=>a.r-b.r).map(o=>o.v); renderPlay(); }
+
+    function finalizeRound(){ let score=state.correct; const cleared=(state.revealed.every(Boolean)); if(cleared){ score+=2; state.cleared=(state.cleared||0)+1; } state.total+=score; localStorage.setItem('cleared_play', state.cleared); localStorage.setItem('total_play', state.total); renderCategories(); const toast=document.createElement('div'); toast.textContent=state.timeUp?`Time's up. +${score}`:(cleared?`Category cleared! +${score}`:`Round complete. +${score}`); Object.assign(toast.style,{ position:'fixed', left:'50%', bottom:'24px', transform:'translateX(-50%)', padding:'10px 14px', background:'linear-gradient(90deg, var(--brand-primary), var(--brand-secondary))', color:'#fff', borderRadius:'12px', boxShadow:'0 8px 24px rgba(0,0,0,0.25)', fontWeight:'800', zIndex:9998 }); document.body.appendChild(toast); setTimeout(()=>toast.remove(),1800); }
+
+    // Modal actions
+    els.timesUpClose.onclick = ()=>{ hideTimesUpModal(); };
+    els.timesUpReveal.onclick = ()=>{
+      hideTimesUpModal();
+      // Ensure current card reveals
+      const cat=data[state.selectedIndex]; if(!cat) return;
+      const nextIdx=state.order.find(i=>!state.shown[i]); if(nextIdx===undefined) return;
+      state.shown[nextIdx]=true; renderPlay();
+    };
+
+    // Bindings
+    els.startBtn.onclick=()=>{ state.running?stopTimer():startTimer(); };
+    els.timerBtn.onclick=()=>{ state.running?stopTimer():startTimer(); };
+    els.resetBtn.onclick=resetRound; els.shuffleBtn.onclick=shuffleOrder; els.newGameBtn.onclick=()=>{ hideTimesUpModal(); stopTimer(); localStorage.removeItem('cleared_play'); localStorage.removeItem('total_play'); state={ selectedIndex:null, order:[0,1,2,3,4,5], revealed:[false,false,false,false,false,false], shown:[false,false,false,false,false,false], lockedClues:[true,true,true,true], correct:0, cleared:0, total:0, running:false, time:60, timeUp:false, interval:null }; els.currentCategory.textContent='Pick a category to begin'; els.play.innerHTML=''; els.correct.textContent='0'; els.cleared.textContent='0'; els.total.textContent='0'; els.count.textContent='60'; els.fill.style.width='0%'; renderCategories(); };
+
+    renderCategories();
+  </script>
+</body>
+</html>
